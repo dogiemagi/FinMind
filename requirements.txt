@@ -1,0 +1,12 @@
+torch>=2.4
+numpy
+pydantic>=2
+fastapi
+uvicorn
+pytest
+# optional upgrades (not required to run):
+# sentence-transformers   -> real semantic embeddings (finmind.rag.SentenceTransformerEmbedder)
+# pypdf                   -> PDF ingestion
+# transformers peft trl bitsandbytes accelerate datasets   -> scripts/finetune_hf.py
+# vllm                    -> scripts/serve_vllm.sh (Linux + NVIDIA GPU)
+# ragas deepeval mlflow langsmith                          -> external eval/tracking
