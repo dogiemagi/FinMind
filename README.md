@@ -5,13 +5,50 @@ extracts invoice data, and executes payments **only after human approval** — r
 GPT we wrote, pretrained, LoRA-tuned, DPO-aligned and quantized ourselves, behind a multi-provider
 router (Claude / GPT / Gemini / local / offline), with an evaluation gate, API, Docker and K8s.
 
+## Quick start (Django)
+
 ```
-python -m finmind train     # builds data, tokenizer, trains+tunes+quantizes the GPT  (~3 min CPU)
-python -m finmind demo      # RAG, structured output, tools, guardrails, local model, agent + approval
+pip install -r requirements.txt
+python manage.py migrate          # create the database (invoices, payments, audit log, memory, agent runs)
+python manage.py seed_ledger      # 300 synthetic invoices + the policy/contract documents RAG reads
+python manage.py train_model      # tokenizer, mini-GPT, LoRA + DPO, quantization (~3 min on CPU)
+python manage.py runserver        # http://127.0.0.1:8000
+python manage.py createsuperuser  # optional: then open /admin to browse invoices, payments, audit log
+```
+
+Without `train_model` the app still works for documents, ledger and the payment agent; only the
+Model lab needs the trained GPT (the API returns a clear 503 telling you what to run).
+
+## Other commands
+
+```
+python manage.py test       # 27 tests: Django ORM ledger, REST API, approval flow, UI template
+python -m pytest tests -q   # 22 tests: framework-free ML / RAG / agent library
+python -m finmind demo      # terminal tour: RAG, structured output, tools, guardrails, local model, agent
 python -m finmind eval      # compares 4 retrieval configs, runs the CI regression gate
-python -m finmind serve     # FastAPI on :8000   (then: python -m finmind bench)
-python -m pytest tests -q   # 21 tests
+python -m finmind bench     # load-test the running server (p50 / p95 / requests per second)
 ```
+
+(`demo` and `eval` use the same `db.sqlite3` and `artifacts/`, so run the quick start first.)
+
+## Project structure
+
+```
+manage.py
+config/            settings, urls, wsgi/asgi
+ledger/            Django app: Invoice, Payment, AuditLog, Memory models, admin, ORM-backed ledger
+                   (DjangoLedger), seed_ledger command, /api/ledger/* endpoints
+assistant/         Django app: /api/ask (SSE streaming), /extract, /tokenize, /generate, /report, /health,
+                   /metrics; guardrails + rate-limit middleware; train_model command
+agents/            Django app: Maya, the payment agent: AgentRun model (paused runs persist in the DB),
+                   /api/agent/run and /api/agent/approve
+web/               Django app: index template + static/web/app.css, app.js (the UI)
+finmind/           framework-free library: tokenizer, GPT, LoRA/DPO, RAG, agents, evals, quantization
+tests/             tests for the library (pytest);  each Django app has its own tests.py
+```
+
+The ML code in `finmind/` knows nothing about Django. The Django apps inject their own database
+layer (`DjangoLedger`) into it, so the same agent runs against raw SQLite in the CLI and the ORM in the web app.
 
 ## Roadmap phase → where it lives
 
@@ -22,7 +59,7 @@ python -m pytest tests -q   # 21 tests
 | 3 Transformer | Q/K/V, scaled dot-product, causal mask, multi-head, residual, LayerNorm, GPT | `gpt.py` | `CausalSelfAttention.forward` |
 | 4 LLM fundamentals | pretraining, perplexity, greedy / temperature / top-k / top-p / beam, **KV cache** | `train.py`, `sampling.py` | `metrics.json → phase4_kv_cache` |
 | 5 Ecosystem | Claude, OpenAI, Gemini, local — cost/latency per token | `llm.py` (`Router`, `cost_report`) | set `ANTHROPIC_API_KEY` etc. |
-| 6 App engineering | structured JSON (Pydantic + repair), function calling, ReAct loop, streaming (SSE), retries/fallback, guardrails | `llm.py`, `guardrails.py`, `api.py` | `/ask`, `/extract`, injection + PII tests |
+| 6 App engineering | structured JSON (Pydantic + repair), function calling, ReAct loop, streaming (SSE), retries/fallback, guardrails | `llm.py`, `guardrails.py`, `assistant/views.py` (Django REST) | `/api/ask`, `/api/extract`, injection + PII tests |
 | 7 RAG | loaders, sentence chunking + overlap, embeddings, BM25, **hybrid RRF**, reranker, metadata filter, context compression, citations, abstention | `rag.py` | `retrieve(mode=…, rerank=…, filters=…)` |
 | 8 Fine-tuning | **LoRA from scratch**, SFT with loss masking, **DPO**, adapter merge, held-out eval; real QLoRA with TRL/PEFT | `lora.py`, `scripts/finetune_hf.py` | `phase8_*` metrics |
 | 9 Agents | state graph, planner/supervisor, tools, short + long-term memory, **human-in-the-loop interrupt/resume**, policy enforcement, audit log, safe SQL gate | `agent.py` | `demo`, `/agent/run` → `/agent/approve` |

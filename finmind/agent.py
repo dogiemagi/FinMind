@@ -81,7 +81,8 @@ class Ledger:
     def safe_select(self, sql: str, limit: int = 20) -> list[tuple]:
         return self.select_named(sql, limit)[1]
 
-    def select_named(self, sql: str, limit: int = 20) -> tuple[list[str], list[tuple]]:
+    def _validate(self, sql: str) -> str:
+        """The read-only gate: one SELECT, no write keywords, allow-listed tables."""
         s = sql.strip().rstrip(";")
         if ";" in s or not re.match(r"(?is)^select\b", s):
             raise PermissionError("only a single SELECT statement is allowed")
@@ -90,9 +91,21 @@ class Ledger:
         tables = set(re.findall(r"(?i)\b(?:from|join)\s+(\w+)", s))
         if not tables <= self.ALLOWED_TABLES:
             raise PermissionError(f"table not allowed: {tables - self.ALLOWED_TABLES}")
+        return s
+
+    def select_named(self, sql: str, limit: int = 20) -> tuple[list[str], list[tuple]]:
+        s = self._validate(sql)
         with self._con() as c:
             cur = c.execute(f"SELECT * FROM ({s}) LIMIT {limit}")
             return [d[0] for d in cur.description], cur.fetchall()
+
+    def remember(self, key: str, value: str) -> None:
+        with self._con() as c:
+            c.execute("INSERT OR REPLACE INTO memory VALUES(?,?)", (key, value))
+
+    def memory_rows(self) -> list[tuple]:
+        with self._con() as c:
+            return c.execute("SELECT key,value FROM memory").fetchall()
 
     def overdue(self) -> list[dict]:
         with self._con() as c:
@@ -150,12 +163,10 @@ class FinanceAgent:
 
     # ---- long-term memory (persisted in the DB)
     def remember(self, key, value):
-        with self.ledger._con() as c:
-            c.execute("INSERT OR REPLACE INTO memory VALUES(?,?)", (key, value))
+        self.ledger.remember(key, value)
 
     def recall(self, query):
-        with self.ledger._con() as c:
-            rows = c.execute("SELECT key,value FROM memory").fetchall()
+        rows = self.ledger.memory_rows()
         q = set(query.lower().split())
         return [f"{k}: {v}" for k, v in rows if q & set(k.lower().split("_")) | q & set(v.lower().split())]
 

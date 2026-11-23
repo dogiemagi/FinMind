@@ -75,12 +75,14 @@ def main():
         demo()
     elif cmd == "eval":
         evaluate()
-    elif cmd == "serve":
-        import uvicorn
-        uvicorn.run("finmind.api:app", host="127.0.0.1", port=8000)
+    elif cmd == "serve":                       # thin alias for the Django dev server
+        import os
+        from django.core.management import execute_from_command_line
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+        execute_from_command_line(["manage.py", "runserver", "127.0.0.1:8000"])
     elif cmd == "bench":
         from .quant import load_test
-        print(load_test("http://127.0.0.1:8000/ask", {"question": "What is the hotel cap in major cities?"}, n=60, concurrency=8))
+        print(load_test("http://127.0.0.1:8000/api/ask", {"question": "What is the hotel cap in major cities?"}, n=60, concurrency=8))
     else:
         print(__doc__)
 

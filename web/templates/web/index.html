@@ -1,0 +1,175 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FinMind — Finance Copilot</title>
+<link rel="stylesheet" href="{% static 'web/app.css' %}">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+<symbol id="i-maya" viewBox="0 0 64 64">
+  <path d="M14 36C11 14 23 5 33 5c11 0 21 9 17 31-1 8-4 12-6 12H20c-3-2-5-6-6-12z" fill="#2a1a16"/>
+  <path d="M6 64c1-13 12-19 26-19s25 6 26 19z" fill="#3b5bdb"/>
+  <path d="M25 46l7 10 7-10z" fill="#fff"/><path d="M28.5 47l3.5 5 3.5-5z" fill="#e8ecff"/>
+  <path d="M28 37h8v10c-2 3-6 3-8 0z" fill="#dca57d"/>
+  <ellipse cx="32" cy="29" rx="11.2" ry="13" fill="#f3c3a0"/>
+  <ellipse cx="20.9" cy="30" rx="1.8" ry="2.6" fill="#eab08c"/><ellipse cx="43.1" cy="30" rx="1.8" ry="2.6" fill="#eab08c"/>
+  <path d="M20 28c-1-12 7-16 14-16 8 0 12 6 10 16-2-6-6-8-11-8-6 0-10 3-13 8z" fill="#2a1a16"/>
+  <circle cx="22.5" cy="37" r="1.4" fill="#f5d36b"/><circle cx="41.5" cy="37" r="1.4" fill="#f5d36b"/>
+  <ellipse cx="27.4" cy="30.5" rx="1.5" ry="1.9" fill="#2a1a16"/><ellipse cx="36.6" cy="30.5" rx="1.5" ry="1.9" fill="#2a1a16"/>
+  <circle cx="27.9" cy="29.9" r=".5" fill="#fff"/><circle cx="37.1" cy="29.9" r=".5" fill="#fff"/>
+  <path d="M24.5 26.6q3-1.8 6 0M33.5 26.6q3-1.8 6 0" stroke="#2a1a16" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M32 31.5q-1.3 3.2.6 3.7" stroke="#d99b76" stroke-width=".9" fill="none" stroke-linecap="round"/>
+  <path d="M27.3 37.2q4.7 4.2 9.4 0" stroke="#b9514a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <circle cx="24.2" cy="34.6" r="2.3" fill="#f08a7e" opacity=".3"/><circle cx="39.8" cy="34.6" r="2.3" fill="#f08a7e" opacity=".3"/>
+</symbol>
+<symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-5.4A8 8 0 1 1 21 12z"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 14h.01M15 14h.01M2 13v2M22 13v2"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+<symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3M7 15h10"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+</defs></svg>
+
+<div class="app">
+<aside id="side">
+  <div class="brand"><div class="logo"><svg class="face"><use href="#i-maya"/></svg></div><div><b>FinMind</b><small>Finance Copilot</small></div></div>
+  <div class="group">Workspace</div>
+  <button class="nav on" data-v="assistant"><svg class="i"><use href="#i-chat"/></svg>Assistant</button>
+  <button class="nav" data-v="agent"><svg class="i"><use href="#i-bot"/></svg>Maya · Payment agent</button>
+  <button class="nav" data-v="extract"><svg class="i"><use href="#i-code"/></svg>Invoice extraction</button>
+  <div class="group">Data</div>
+  <button class="nav" data-v="ledger"><svg class="i"><use href="#i-db"/></svg>Ledger</button>
+  <div class="group">Engineering</div>
+  <button class="nav" data-v="lab"><svg class="i"><use href="#i-flask"/></svg>Model lab</button>
+  <button class="nav" data-v="eval"><svg class="i"><use href="#i-chart"/></svg>Evaluation</button>
+  <div class="side-foot">
+    <div class="pill"><span class="dot" id="hdot"></span><span id="htxt">Connecting…</span></div>
+    <button class="theme" id="themeBtn"><svg class="i"><use href="#i-moon"/></svg><span>Dark mode</span></button>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="top">
+    <button class="burger" id="burger" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    <div><h1 id="ttl">Assistant</h1><p id="sub"></p></div><div class="sp"></div>
+    <button class="btn sm" id="newChat"><svg class="i" style="width:15px;height:15px"><use href="#i-plus"/></svg>New chat</button>
+  </div>
+  <div class="content">
+
+  <!-- ASSISTANT -->
+  <div class="view on" id="v-assistant">
+    <div class="chatwrap">
+      <div class="thread" id="thread"></div>
+      <div>
+        <div class="composer"><textarea id="q" rows="1" placeholder="Ask about policies, contracts, approval limits…"></textarea>
+          <button class="btn pri" id="send"><svg class="i"><use href="#i-send"/></svg>Send</button></div>
+        <div class="opts">Retrieval
+          <select id="mode"><option>hybrid</option><option>dense</option><option>bm25</option></select>
+          Rerank <select id="rerank"><option value="true">on</option><option value="false">off</option></select>
+          <span style="margin-left:auto"><svg class="i" style="width:13px;height:13px;vertical-align:-2px"><use href="#i-shield"/></svg> PII masked · prompt-injection guarded</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGENT -->
+  <div class="view" id="v-agent">
+    <div class="agentgrid">
+      <div class="chatwrap">
+        <div class="maya-head"><div class="av h"><svg class="face"><use href="#i-maya"/></svg></div>
+          <div><b>Maya</b><span class="badge b-ok">● Online</span><small>Finance Operations · asks before moving money</small></div></div>
+        <div class="thread" id="athread"></div>
+        <div>
+          <div class="chips" id="agentSug"></div>
+          <div class="composer"><textarea id="task" rows="1" placeholder="Message Maya…"></textarea>
+            <button class="btn pri" id="runBtn"><svg class="i"><use href="#i-send"/></svg>Send</button></div>
+          <div class="opts"><span><svg class="i" style="width:13px;height:13px;vertical-align:-2px"><use href="#i-shield"/></svg> Maya never moves money without your approval</span></div>
+        </div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="card"><div class="bd" style="text-align:center">
+          <div class="av h big"><svg class="face"><use href="#i-maya"/></svg></div>
+          <b style="font-size:16px;display:block;margin-top:10px">Maya</b>
+          <span class="mute">Finance Operations</span>
+          <div style="margin-top:8px"><span class="badge b-ok">● Online</span></div>
+          <p class="mute" style="font-size:12.5px;margin:12px 0 0">Looks up invoices, answers policy questions, and prepares payments for your sign-off.</p></div></div>
+        <div class="card"><div class="hd"><h3>What Maya is doing</h3><span class="sub" id="runId"></span></div><div class="bd">
+          <div class="steps" id="steps"></div>
+          <pre class="code" id="alog" style="margin-top:14px;display:none"></pre></div></div>
+        <div class="card"><div class="hd"><h3>Approval policy</h3><span class="sub">Enforced in code</span></div><div class="bd policy">
+          <div><span>Under $1,000</span><span class="badge b-ok">Clerk</span></div>
+          <div><span>$1,000 – $5,000</span><span class="badge b-warn">Finance manager</span></div>
+          <div><span>Above $5,000</span><span class="badge b-bad">CFO</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+<!-- EXTRACT -->
+  <div class="view" id="v-extract">
+    <div class="grid g2">
+      <div class="card"><div class="hd"><h3>Source text</h3><span class="sub">Paste an invoice description</span></div><div class="bd">
+        <textarea id="exText" style="min-height:170px">Invoice INV-2025-0042 from Acme Cloud dated 2025-03-04 for $1,234.50: cloud hosting usage for the month. Due 2025-04-03.</textarea>
+        <div class="row" style="margin-top:12px"><button class="btn pri" id="exBtn">Extract fields</button></div></div></div>
+      <div class="card"><div class="hd"><h3>Structured output</h3><span class="sub">Validated against a Pydantic schema</span><span style="flex:1"></span><button class="btn sm ghost" id="exCopy"><svg class="i" style="width:15px;height:15px"><use href="#i-copy"/></svg>Copy</button></div>
+        <div class="bd" id="exOut"><div class="empty">Run an extraction to see JSON here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- LEDGER -->
+  <div class="view" id="v-ledger">
+    <div class="grid g4" id="kpis" style="margin-bottom:16px"></div>
+    <div class="grid g2">
+      <div class="card"><div class="hd"><h3>Spend by vendor</h3></div><div class="bd" id="vendors"></div></div>
+      <div class="card"><div class="hd"><h3>Recent payments</h3></div><div id="pays"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Largest overdue invoices</h3><span class="sub">pending and past due</span></div><div id="overdue"></div></div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Audit log</h3><span class="sub">every approval and execution is recorded</span></div><div id="audit"></div></div>
+  </div>
+
+  <!-- LAB -->
+  <div class="view" id="v-lab">
+    <div class="card"><div class="hd"><h3>Tokenizer playground</h3><span class="sub">Our own byte-level BPE</span></div><div class="bd">
+      <input id="tokIn" value="Invoice INV-2025-0042 from Acme Cloud for $1,234.50">
+      <div id="tokStats" class="row" style="margin:14px 0 10px;gap:8px"></div><div class="toks" id="tokOut"></div></div></div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Generate with our fine-tuned GPT</h3><span class="sub">~400k parameters — learns the format, invents the values</span></div><div class="bd">
+      <label class="f">Prompt</label>
+      <textarea id="genIn">Extract fields: Invoice INV-2025-0007 from Acme Cloud dated 2025-02-01 for $480.00: API platform license seats. Due 2025-03-03.</textarea>
+      <div class="row" style="margin-top:14px">
+        <div class="slider" style="width:170px"><label class="f">Temperature <b id="tv">0.3</b></label><input type="range" id="temp" min="0.1" max="2" step="0.1" value="0.3"></div>
+        <div class="slider" style="width:170px"><label class="f">Top-p <b id="pv">1.0</b></label><input type="range" id="topp" min="0.1" max="1" step="0.05" value="1"></div>
+        <div style="width:90px"><label class="f">Top-k</label><input type="number" id="topk" value="0" min="0" max="50"></div>
+        <div style="width:110px"><label class="f">Greedy</label><select id="greedy"><option value="true" selected>on</option><option value="false">off</option></select></div>
+        <button class="btn pri" id="genBtn">Generate</button></div>
+      <div id="genOut" style="margin-top:14px"></div></div></div>
+  </div>
+
+  <!-- EVAL -->
+  <div class="view" id="v-eval">
+    <div class="card"><div class="hd"><h3>Retrieval configurations</h3><span class="sub">darker = better · refresh with <span class="mono">python -m finmind eval</span></span></div><div id="evalT"></div></div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><div class="hd"><h3>Pretraining loss</h3><span class="sub">next-token prediction</span></div><div class="bd" id="loss"></div></div>
+      <div class="card"><div class="hd"><h3>Quantization trade-off</h3></div><div id="quant"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><div class="hd"><h3>Training report by phase</h3></div><div id="phases"></div></div>
+  </div>
+
+  </div>
+</div>
+</div>
+<div class="toast-box" id="toasts"></div>
+
+<script src="{% static 'web/app.js' %}" defer></script>
+</body>
+</html>

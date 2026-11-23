@@ -12,7 +12,7 @@ spec:
           image: finmind:latest
           ports: [{ containerPort: 8000 }]
           envFrom: [{ secretRef: { name: llm-keys, optional: true } }]
-          readinessProbe: { httpGet: { path: /health, port: 8000 }, periodSeconds: 10 }
+          readinessProbe: { httpGet: { path: /api/health, port: 8000 }, periodSeconds: 10 }
           resources: { requests: { cpu: "500m", memory: 1Gi }, limits: { cpu: "2", memory: 2Gi } }
 ---
 apiVersion: v1

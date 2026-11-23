@@ -6,7 +6,7 @@ MODEL="${1:-Qwen/Qwen2.5-1.5B-Instruct}"
 pip install vllm
 python -m vllm.entrypoints.openai.api_server --model "$MODEL" --port 8001 --max-model-len 4096 --gpu-memory-utilization 0.9 &
 sleep 60
-# benchmark the same load test used for the FastAPI gateway:
+# benchmark the same load test used for the Django gateway:
 python - <<'PY'
 from finmind.quant import load_test
 print(load_test("http://127.0.0.1:8001/v1/chat/completions",

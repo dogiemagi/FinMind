@@ -63,7 +63,7 @@ def train_all(art: Path = ART, pretrain_steps: int = 250, log=print) -> dict:
 
     log("[Phase 1] data + neural network from scratch")
     docs_dir = D.write_documents(art / "data")
-    invoices = D.create_ledger(art / "ledger.db")
+    invoices = D.make_invoices(300)      # same deterministic data the Django `seed_ledger` command loads
     M["phase1_classifier"] = train_classifier()
     log("  ", M["phase1_classifier"])
 
@@ -152,12 +152,16 @@ class System:
     local: LocalGPTProvider
 
 
-def load_system(art: Path = ART) -> System:
-    tok = BPETokenizer.load(art / "tokenizer.json")
-    model = _load_model(art / "finmind_gpt.pt")
+def load_system(art: Path = ART, ledger=None, with_model: bool = True) -> System:
+    """Assemble the runtime. `ledger` is injectable: the Django app passes an ORM-backed ledger,
+    the CLI defaults to raw SQLite on db.sqlite3. `with_model=False` skips the GPT (used in tests)."""
     kb = KnowledgeBase().build(load_documents(art / "data" / "docs"))
-    local = LocalGPTProvider(model, tok, greedy=True)
+    tok = model = local = None
+    if with_model:
+        tok = BPETokenizer.load(art / "tokenizer.json")
+        model = _load_model(art / "finmind_gpt.pt")
+        local = LocalGPTProvider(model, tok, greedy=True)
     router = Router.from_env()
     rag = RAGPipeline(kb, router)
-    ledger = Ledger(art / "ledger.db")
+    ledger = ledger or Ledger(ROOT / "db.sqlite3")
     return System(tok, model, kb, router, rag, ledger, FinanceAgent(router, rag, ledger), local)

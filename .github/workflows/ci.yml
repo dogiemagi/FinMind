@@ -8,6 +8,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install -r requirements.txt
-      - run: python -m pytest tests -q
-      - run: python -m finmind train 300
-      - run: python -m finmind eval          # regression gate: fails the build if quality drops
+      - run: python -m pytest tests -q            # framework-free ML / RAG / agent library
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run   # fails if a model change has no migration
+      - run: python manage.py test                # Django apps: ORM ledger, REST API, approval flow
+      - run: python manage.py migrate --noinput && python manage.py seed_ledger && python manage.py train_model --steps 250
+      - run: python -m finmind eval               # regression gate: fails the build if quality drops
